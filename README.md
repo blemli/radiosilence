@@ -3,9 +3,9 @@ enforce radio silence during phone calls
 
 ## install 
 ```bash
-mkdir /opt/radiosilence
-chown pi /opt/radiosilence
-cd /opt/radiosilence
+cd /opt
+sudo mkdir radiosilence
+sudo chown pi radiosilence
 git clone https://github.com/blemli/radiosilence && cd radiosilence
 chmod +x install.sh && ./install.sh
 ```

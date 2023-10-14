@@ -6,7 +6,7 @@ After=network-online.target
 Type=simple
 User=pi
 WorkingDirectory=/home/pi/kurt
-ExecStart=python3 /opt/reifenboss/radiosilence.py
+ExecStart=python3 /opt/radiosilence/radiosilence.py
 Restart=on-failure
 RestartSec=1
 
