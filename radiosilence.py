@@ -1,4 +1,5 @@
-import flask
+import flask, os
+
 def usb_off():
     # call uhubctl to turn off usb
     os.system('sudo uhubctl -a off -l 1-1')
