@@ -10,7 +10,8 @@ cd /opt
 sudo mkdir radiosilence
 sudo chown pi radiosilence
 git clone https://github.com/blemli/radiosilence && cd radiosilence
-chmod +x install.sh && ./install.sh
+sudo chmod +x install.sh && ./install.sh
+
 ```
 
 ### on the phone
