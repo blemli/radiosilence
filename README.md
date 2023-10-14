@@ -1,9 +1,7 @@
 # radiosilence
-enforce radio silence during phone calls![radiosilence](assets/radiosilence.png)
+enforce radio silence during phone calls!
 
-
-
-## install 
+![radiosilence](assets/radiosilence.png)
 
 ```bash
 cd /opt
@@ -22,6 +20,18 @@ send a http get request to `http://<ip>/silent` to mute the speaker or `http://<
 
 ## learned
 yealink phone doesn't do mDNS.
+
+
+
+## Development
+
+### Release
+
+```bash
+gh release create vX.Y.Z --generate-notes --prerelease
+```
+
+
 
 ## etymology
 radio silence is a term used in the military to enforce a period of radio silence. It is used to prevent the enemy from intercepting messages. The term is also used in the context of radio broadcasting to refer to a period during which a station or network will not broadcast any programming.
