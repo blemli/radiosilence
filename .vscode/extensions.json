@@ -1,0 +1,21 @@
+{
+    "recommendations": [
+        "chouzz.vscode-better-align",
+        "aaron-bond.better-comments",
+        "wmaurer.change-case",
+        "streetsidesoftware.code-spell-checker",
+        "sleistner.vscode-fileutils",
+        "streetsidesoftware.code-spell-checker-german",
+        "github.copilot",
+        "codezombiech.gitignore",
+        "christian-kohler.path-intellisense",
+        "esbenp.prettier-vscode",
+        "ms-python.vscode-pylance",
+        "ms-python.python",
+        "foxundermoon.shell-format",
+        "ahgood.shift-shift",
+        "calebporzio.simple-project-switcher",
+        "gruntfuggly.todo-tree",
+        "coolbear.systemd-unit-file"
+    ]
+}
