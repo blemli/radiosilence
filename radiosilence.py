@@ -30,6 +30,17 @@ if __name__ =="__main__":
         ip=s.getsockname()[0]
         s.close()
         return ip
+    
+    @app.route('/status')
+    def status():
+        # check if usb is on or off
+        import subprocess
+        process = subprocess.Popen(['sudo', 'uhubctl', '-l', '1-1'], stdout=subprocess.PIPE)
+        stdout = process.communicate()[0]
+        if 'Port 1 status: power off' in stdout.decode('utf-8'):
+            return 'Silent mode on'
+        else:
+            return 'Silent mode off'
 
         
     
