@@ -12,15 +12,14 @@ sudo chmod +x install.sh && ./install.sh
 
 ```
 
-### on the phone
+## usage
+send a http get request to `http://<ip>/silent` to mute the speaker or `http://<ip>/loud` to un-mute it. You can Find the ip on "http://radiosilence.local/ip"
+
+## on the phone
 ![2023-10-14_12-43-19](assets/2023-10-14_12-43-19.png)
 
-## usage
-send a http get request to `http://<ip>/silent` to mute the speaker or `http://<ip>/loud` to un-mute it.
-
 ## learned
-yealink phone doesn't do mDNS.
-
+yealink phone doesn't do mDNS. There is no useful way to do https in a local network, how sad.
 
 
 ## Development
