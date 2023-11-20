@@ -1,10 +1,11 @@
-import flask, os, logging
+import flask, os, logging,subprocess
 state='loud'
 previous_state='loud' # todo: read from file
-
+import subprocess
 def usb_off():
     # call uhubctl to turn off usb
     os.system('sudo uhubctl -a off -l 1-1')
+    
 
 def usb_on():
     # call uhubctl to turn on usb
@@ -12,10 +13,8 @@ def usb_on():
 
 def get_status():
     # check if usb is on or off
-    import subprocess
-    process = subprocess.Popen(['sudo', 'uhubctl', '-l', '1-1'], stdout=subprocess.PIPE)
-    stdout = process.communicate()[0]
-    if 'off' in stdout.decode('utf-8'):
+    output = subprocess.check_output("sudo uhubctl -l 1-1", shell=True)
+    if 'off' in str(output):
         return 'silent'
     else:
         return 'loud'
