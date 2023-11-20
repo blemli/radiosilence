@@ -1,4 +1,6 @@
 import flask, os, logging
+state='loud'
+previous_state='loud' # todo: read from file
 
 def usb_off():
     # call uhubctl to turn off usb
@@ -9,8 +11,7 @@ def usb_on():
     os.system('sudo uhubctl -a on -l 1-1')
 
 if __name__ =="__main__":
-    state='loud'
-    previous_state='loud' # todo: read from file
+
     app = flask.Flask(__name__)
     @app.route('/silent')
     def silent():
