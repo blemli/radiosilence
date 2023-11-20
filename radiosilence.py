@@ -10,11 +10,22 @@ def usb_on():
     # call uhubctl to turn on usb
     os.system('sudo uhubctl -a on -l 1-1')
 
+def get_status():
+    # check if usb is on or off
+    import subprocess
+    process = subprocess.Popen(['sudo', 'uhubctl', '-l', '1-1'], stdout=subprocess.PIPE)
+    stdout = process.communicate()[0]
+    if 'off' in stdout.decode('utf-8'):
+        return 'silent'
+    else:
+        return 'loud'
+
 if __name__ =="__main__":
 
     app = flask.Flask(__name__)
     @app.route('/silent')
     def silent():
+        global state, previous_state
         usb_off()
         previous_state=state
         state='silent'
@@ -23,6 +34,7 @@ if __name__ =="__main__":
     
     @app.route('/loud')
     def loud():
+        global state, previous_state
         usb_on()
         previous_state=state
         state='loud'
@@ -31,6 +43,7 @@ if __name__ =="__main__":
     
     @app.route('/restore')
     def restore():
+        global state, previous_state
         if previous_state=='loud':
             usb_on()
             logging.info("Restored to loud")
@@ -51,15 +64,7 @@ if __name__ =="__main__":
     
     @app.route('/status')
     def status():
-        # check if usb is on or off
-        import subprocess
-        process = subprocess.Popen(['sudo', 'uhubctl', '-l', '1-1'], stdout=subprocess.PIPE)
-        stdout = process.communicate()[0]
-        if 'off' in stdout.decode('utf-8'):
-            return 'silent'
-        else:
-            return 'loud'
-        
+        return get_status()
     
     # start flask app
     app.run(host='0.0.0.0', port=8080, debug=False)
