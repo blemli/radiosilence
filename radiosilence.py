@@ -7,6 +7,11 @@ def usb_off():
     os.system('sudo uhubctl -a off -l 1-1')
     
 
+def log_useragent():
+    # log user agent
+    user_agent = flask.request.headers.get('User-Agent')
+    logging.info(f"User-Agent: {user_agent}")
+
 def usb_on():
     # call uhubctl to turn on usb
     os.system('sudo uhubctl -a on -l 1-1')
@@ -24,6 +29,7 @@ if __name__ =="__main__":
     app = flask.Flask(__name__)
     @app.route('/silent')
     def silent():
+        log_useragent()
         global state, previous_state
         usb_off()
         previous_state=state
