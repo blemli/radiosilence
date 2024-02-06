@@ -237,3 +237,8 @@ cython_debug/
 
 # Built Visual Studio Code Extensions
 *.vsix
+.idea/vcs.xml
+.idea/radiosilence.iml
+.idea/misc.xml
+.idea/inspectionProfiles/Project_Default.xml
+.idea/inspectionProfiles/profiles_settings.xml
