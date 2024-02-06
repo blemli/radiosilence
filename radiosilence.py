@@ -1,20 +1,26 @@
-import flask, os, logging, subprocess
-from icecream import ic
-from ua_parser import user_agent_parser
+import flask, os, logging, subprocess, ua_parser
 
 state = 'loud'
 previous_state = 'loud'  # todo: read from file
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
+werkzeug_logger = logging.getLogger('werkzeug')
+werkzeug_logger.setLevel(logging.ERROR)
 
 
 def usb_off():
-    # call uhubctl to turn off usb
-    os.system('sudo uhubctl -a off -l 1-1')
+    output = subprocess.check_output('sudo uhubctl -a off -l 1-1', shell=True)
+    if not "off" in str(output):
+        logging.error("Could not turn off USB")
+        return False
+    logging.debug("USB turned off")
 
 
 def usb_on():
-    # call uhubctl to turn on usb
-    os.system('sudo uhubctl -a on -l 1-1')
+    subprocess.check_output('sudo uhubctl -a on -l 1-1', shell=True)
+    if get_status == 'silent':
+        logging.error("Could not turn on USB")
+        return False
+    logging.debug("USB turned on")
 
 
 def get_status():
@@ -29,31 +35,29 @@ def get_status():
 def get_user_agent():
     ua_string = flask.request.headers.get('User-Agent')
     logging.debug("User-Agent: " + ua_string)
-    return user_agent_parser.Parse(ua_string)
+    return ua_parser.user_agent_parser.Parse(ua_string)
 
 
 def is_phone():
     user_agent = get_user_agent()
-    ic(user_agent)
     if user_agent['os']['family'] == 'Other':
         logging.debug("Phone detected")
         return True
     else:
-        logging.debug("Not a phone")
+        logging.warning("Client is not a phone, denying request.")
         return False
-
 
 
 if __name__ == "__main__":
 
     app = flask.Flask(__name__)
 
-
     @app.route('/silent')
     def silent():
         global state, previous_state
+        logging.debug("Route /silent called")
         if not is_phone():
-            return 'You are not a Phone', 403
+            return 'Access denied, you are not a Phone', 403
         usb_off()
         previous_state = state
         state = 'silent'
@@ -64,8 +68,9 @@ if __name__ == "__main__":
     @app.route('/loud')
     def loud():
         global state, previous_state
+        logging.debug("Route /loud called")
         if not is_phone():
-            return 'You are not a Phone', 403
+            return 'Access denied, you are not a Phone', 403
         usb_on()
         previous_state = state
         state = 'loud'
@@ -76,8 +81,9 @@ if __name__ == "__main__":
     @app.route('/restore')
     def restore():
         global state, previous_state
+        logging.debug("Route /restore called")
         if not is_phone():
-            return 'You are not a Phone', 403
+            return 'Access denied, you are not a Phone', 403
         if previous_state == 'loud':
             usb_on()
             logging.info("Restored to loud")
@@ -102,5 +108,5 @@ if __name__ == "__main__":
         return get_status()
 
 
-    # start flask app
+    logging.info("Starting RadioSilence, ready to answer requests.")
     app.run(host='0.0.0.0', port=8080, debug=False)
