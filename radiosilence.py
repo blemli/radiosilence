@@ -3,6 +3,7 @@ from ua_parser import user_agent_parser
 
 state = 'loud'
 previous_state = 'loud'  # todo: read from file
+#todo: better handle very quick state changes
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 werkzeug_logger = logging.getLogger('werkzeug')
 werkzeug_logger.setLevel(logging.ERROR)
