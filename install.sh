@@ -1,5 +1,5 @@
 echo "~~~ install dependencies ~~~"
-sudo apt install uhubctl git python3-pip python3-flask iptables
+sudo apt install uhubctl git python3-pip python3-flask iptables python3-ua-parser
 sudo cp motd /etc/motd
 echo "cd /opt/radiosilence" | sudo tee -a ~/.bashrc
 
