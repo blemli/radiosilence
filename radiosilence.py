@@ -1,4 +1,5 @@
-import flask, os, logging, subprocess, ua_parser
+import flask, os, logging, subprocess
+from ua_parser import user_agent_parser
 
 state = 'loud'
 previous_state = 'loud'  # todo: read from file
@@ -35,7 +36,7 @@ def get_status():
 def get_user_agent():
     ua_string = flask.request.headers.get('User-Agent')
     logging.debug("User-Agent: " + ua_string)
-    return ua_parser.user_agent_parser.Parse(ua_string)
+    return user_agent_parser.Parse(ua_string)
 
 
 def is_phone():
