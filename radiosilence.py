@@ -18,7 +18,7 @@ def usb_off():
 
 def usb_on():
     subprocess.check_output('sudo uhubctl -a on -l 1-1', shell=True)
-    if get_status == 'silent':
+    if get_status() == 'silent':
         logging.error("Could not turn on USB")
         return False
     logging.debug("USB turned on")
@@ -87,15 +87,18 @@ if __name__ == "__main__":
             return 'Access denied, you are not a Phone', 403
         if previous_state == 'loud':
             usb_on()
+            state = 'loud'
             logging.info("Restored to loud")
             return "Restored to loud"
         else:
+            state = 'silent'
             logging.info("Keeping silent")
             return "Keeping silent"
 
 
     @app.route('/ip')
     def ip():
+        #todo: make it work without internet access
         import socket
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         s.connect(("8.8.8.8", 80))
