@@ -1,4 +1,5 @@
 import flask, os, logging, subprocess
+import threading
 from ua_parser import user_agent_parser
 
 state = 'loud'
@@ -8,21 +9,26 @@ logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %
 werkzeug_logger = logging.getLogger('werkzeug')
 werkzeug_logger.setLevel(logging.ERROR)
 
+lock = threading.Lock()
+
+
 
 def usb_off():
-    output = subprocess.check_output('sudo uhubctl -a off -l 1-1', shell=True)
-    if not "off" in str(output):
-        logging.error("Could not turn off USB")
-        return False
-    logging.debug("USB turned off")
+    with lock:
+        output = subprocess.check_output('sudo uhubctl -a off -l 1-1', shell=True)
+        if not "off" in str(output):
+            logging.error("Could not turn off USB")
+            return False
+        logging.debug("USB turned off")
 
 
 def usb_on():
-    subprocess.check_output('sudo uhubctl -a on -l 1-1', shell=True)
-    if get_status() == 'silent':
-        logging.error("Could not turn on USB")
-        return False
-    logging.debug("USB turned on")
+    with lock:
+        subprocess.check_output('sudo uhubctl -a on -l 1-1', shell=True)
+        if get_status() == 'silent':
+            logging.error("Could not turn on USB")
+            return False
+        logging.debug("USB turned on")
 
 
 def get_status():
