@@ -2,15 +2,22 @@ import flask, os, logging, subprocess
 import threading
 from ua_parser import user_agent_parser
 
-state = 'loud'
-previous_state = 'loud'  # todo: read from file
-#todo: better handle very quick state changes
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 werkzeug_logger = logging.getLogger('werkzeug')
 werkzeug_logger.setLevel(logging.ERROR)
 
 lock = threading.Lock()
+state = 'loud'
+previous_state = state
 
+
+def get_status():
+    # check if usb is on or off
+    output = subprocess.check_output("sudo uhubctl -l 1-1", shell=True)
+    if 'off' in str(output):
+        return 'silent'
+    else:
+        return 'loud'
 
 
 def usb_off():
@@ -29,15 +36,6 @@ def usb_on():
             logging.error("Could not turn on USB")
             return False
         logging.debug("USB turned on")
-
-
-def get_status():
-    # check if usb is on or off
-    output = subprocess.check_output("sudo uhubctl -l 1-1", shell=True)
-    if 'off' in str(output):
-        return 'silent'
-    else:
-        return 'loud'
 
 
 def get_user_agent():
@@ -59,6 +57,7 @@ def is_phone():
 if __name__ == "__main__":
 
     app = flask.Flask(__name__)
+
 
     @app.route('/silent')
     def silent():
@@ -105,10 +104,9 @@ if __name__ == "__main__":
 
     @app.route('/ip')
     def ip():
-        #todo: make it work without internet access
         import socket
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        s.connect(("8.8.8.8", 80))
+        s.connect(("8.8.8.8", 80))  # it works even if 8.8.8.8 is not reachable
         address = s.getsockname()[0]
         s.close()
         return address
