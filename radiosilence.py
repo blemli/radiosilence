@@ -71,12 +71,12 @@ if __name__ == "__main__":
     limiter = Limiter(
         get_remote_address,
         app=app,
-        default_limits=["5 per 10 seconds"],
         storage_uri="memory://",
     )
 
 
     @app.route('/silent')
+    @limiter.limit("3 per second, 5 per 10 seconds, 15 per minute")
     def silent():
         global state, previous_state
         logging.debug("Route /silent called")
@@ -90,6 +90,7 @@ if __name__ == "__main__":
 
 
     @app.route('/loud')
+    @limiter.limit("3 per second, 5 per 10 seconds, 15 per minute")
     def loud():
         global state, previous_state
         logging.debug("Route /loud called")
@@ -103,6 +104,7 @@ if __name__ == "__main__":
 
 
     @app.route('/restore')
+    @limiter.limit("3 per second, 5 per 10 seconds, 15 per minute")
     def restore():
         global state, previous_state
         logging.debug("Route /restore called")
