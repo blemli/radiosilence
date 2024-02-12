@@ -1,10 +1,13 @@
 import flask, os, logging, subprocess
 import threading
 from ua_parser import user_agent_parser
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 werkzeug_logger = logging.getLogger('werkzeug')
 werkzeug_logger.setLevel(logging.ERROR)
+
 
 lock = threading.Lock()
 state = 'loud'
@@ -53,10 +56,24 @@ def is_phone():
         logging.warning("Client is not a phone, denying request.")
         return False
 
+def get_ip():
+    import socket
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    s.connect(("8.8.8.8", 80))  # it works even if 8.8.8.8 is not reachable
+    address = s.getsockname()[0]
+    s.close()
+    return address
+
 
 if __name__ == "__main__":
 
     app = flask.Flask(__name__)
+    limiter = Limiter(
+        get_remote_address,
+        app=app,
+        default_limits=["5 per 10 seconds"],
+        storage_uri="memory://",
+    )
 
 
     @app.route('/silent')
@@ -104,11 +121,7 @@ if __name__ == "__main__":
 
     @app.route('/ip')
     def ip():
-        import socket
-        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        s.connect(("8.8.8.8", 80))  # it works even if 8.8.8.8 is not reachable
-        address = s.getsockname()[0]
-        s.close()
+        address = get_ip()
         return address
 
 
@@ -118,4 +131,5 @@ if __name__ == "__main__":
 
 
     logging.info("Starting RadioSilence, ready to answer requests.")
+    logging.info("connect to http://radiosilence.local or  http://" + get_ip())
     app.run(host='0.0.0.0', port=8080, debug=False)
