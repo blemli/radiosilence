@@ -14,7 +14,11 @@ sudo service iptables restart
 sudo service ip6tables restart
 
 echo "~~~ allow usb device access for non-root ~~~"
+echo 'SUBSYSTEM=="usb", ATTR{idVendor}=="1d6b", ATTR{idProduct}=="0003", MODE="0664", GROUP="plugdev"' | sudo tee /etc/udev/rules.d/99-usb.rules
+echo 'SUBSYSTEM=="usb", ATTR{idVendor}=="2109", ATTR{idProduct}=="3431", MODE="0664", GROUP="plugdev"' | sudo tee -a /etc/udev/rules.d/99-usb.rules
+sudo udevadm control --reload-rules && sudo udevadm trigger
 sudo usermod -a -G plugdev pi
+
 
 echo "~~~ install service ~~~"
 sudo cp -f radiosilence.service /lib/systemd/system/radiosilence.service
