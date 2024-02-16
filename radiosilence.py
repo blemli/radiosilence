@@ -16,7 +16,7 @@ previous_state = state
 
 def get_status():
     # check if usb is on or off
-    output = subprocess.check_output("sudo uhubctl -l 1-1", shell=True)
+    output = subprocess.check_output("uhubctl -l 1-1", shell=True)
     if 'off' in str(output):
         return 'silent'
     else:
@@ -25,7 +25,7 @@ def get_status():
 
 def usb_off():
     with lock:
-        output = subprocess.check_output('sudo uhubctl -a off -l 1-1', shell=True)
+        output = subprocess.check_output('uhubctl -a off -l 1-1', shell=True)
         if not "off" in str(output):
             logging.error("Could not turn off USB")
             return False
@@ -34,7 +34,7 @@ def usb_off():
 
 def usb_on():
     with lock:
-        subprocess.check_output('sudo uhubctl -a on -l 1-1', shell=True)
+        subprocess.check_output('uhubctl -a on -l 1-1', shell=True)
         if get_status() == 'silent':
             logging.error("Could not turn on USB")
             return False
@@ -103,22 +103,22 @@ if __name__ == "__main__":
         return 'Silent mode off'
 
 
-    @app.route('/restore')
-    @limiter.limit("3 per second, 5 per 10 seconds, 15 per minute")
-    def restore():
-        global state, previous_state
-        logging.debug("Route /restore called")
-        if not is_phone():
-            return 'Access denied, you are not a Phone', 403
-        if previous_state == 'loud':
-            usb_on()
-            state = 'loud'
-            logging.info("Restored to loud")
-            return "Restored to loud"
-        else:
-            state = 'silent'
-            logging.info("Keeping silent")
-            return "Keeping silent"
+    # @app.route('/restore')
+    # @limiter.limit("3 per second, 5 per 10 seconds, 15 per minute")
+    # def restore():
+    #     global state, previous_state
+    #     logging.debug("Route /restore called")
+    #     if not is_phone():
+    #         return 'Access denied, you are not a Phone', 403
+    #     if previous_state == 'loud':
+    #         usb_on()
+    #         state = 'loud'
+    #         logging.info("Restored to loud")
+    #         return "Restored to loud"
+    #     else:
+    #         state = 'silent'
+    #         logging.info("Keeping silent")
+    #         return "Keeping silent"
 
 
     @app.route('/ip')

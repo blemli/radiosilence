@@ -1,6 +1,8 @@
 echo "~~~ install dependencies ~~~"
 sudo apt install uhubctl git python3-pip python3-flask iptables python3-ua-parser
 sudo cp motd /etc/motd
+sudo cp motd_dynamic.sh /etc/profile.d/motd_dynamic.sh
+sudo chmod +x /etc/profile.d/motd_dynamic.sh
 echo "cd /opt/radiosilence" | sudo tee -a ~/.bashrc
 
 echo "~~~ redirect requests on port 80 to 8080 ~~~~"
@@ -10,6 +12,9 @@ echo iptables-persistent iptables-persistent/autosave_v6 boolean true | sudo deb
 sudo apt install -y iptables-persistent
 sudo service iptables restart
 sudo service ip6tables restart
+
+echo "~~~ allow usb device access for non-root ~~~"
+sudo usermod -a -G plugdev pi
 
 echo "~~~ install service ~~~"
 sudo cp -f radiosilence.service /lib/systemd/system/radiosilence.service
