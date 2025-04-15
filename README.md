@@ -3,6 +3,7 @@ enforce radio silence during phone calls!
 
 ![radiosilence](assets/radiosilence.png)
 
+## installation
 ```bash
 cd /opt
 sudo mkdir radiosilence
@@ -29,7 +30,6 @@ yealink phone doesn't do mDNS. There is no useful way to do https in a local net
 ```bash
 gh release create vX.Y.Z --generate-notes --prerelease
 ```
-
 
 
 ## etymology
